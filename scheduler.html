@@ -357,9 +357,9 @@
                 
                 <div class="flow-stage">
                     <div class="flow-icon">👁️</div>
-                    <div class="flow-title">Scheduler Detects</div>
+                    <div class="flow-title">Scheduler Watches</div>
                     <div class="flow-status status-detected">Detected</div>
-                    <div class="flow-description">Scheduler watches and finds unscheduled pods</div>
+                    <div class="flow-description">Scheduler finds unscheduled pods</div>
                 </div>
                 
                 <div class="flow-arrow">→</div>
@@ -404,13 +404,14 @@
                             <div class="concept-subtitle">Predicate Phase - Remove Unsuitable Nodes</div>
                         </div>
                     </div>
-                    <p style="color: #cbd5e1; margin-bottom: 12px;">The filtering phase eliminates nodes that cannot run the pod due to constraints.</p>
+                    <p style="color: #cbd5e1; margin-bottom: 12px;">The filtering step finds the set of Nodes where it's feasible to schedule the Pod.</p>
                     <ul class="concept-list">
-                        <li>Node has sufficient CPU/Memory</li>
+                        <li>Sufficient CPU and memory resources</li>
+                        <li>Pod resource requests can be met</li>
                         <li>Node selectors match pod requirements</li>
-                        <li>Tolerations and taints align</li>
-                        <li>Affinity rules are satisfied</li>
-                        <li>Volume mounts can be provisioned</li>
+                        <li>Taints and tolerations align</li>
+                        <li>Pod affinity/anti-affinity satisfied</li>
+                        <li>Volume provisioning possible</li>
                     </ul>
                     <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/" target="_blank" class="learn-more">Learn More →</a>
                 </div>
@@ -424,13 +425,13 @@
                             <div class="concept-subtitle">Priority Phase - Rank Remaining Nodes</div>
                         </div>
                     </div>
-                    <p style="color: #cbd5e1; margin-bottom: 12px;">The scoring phase ranks feasible nodes to find the best fit for the pod.</p>
+                    <p style="color: #cbd5e1; margin-bottom: 12px;">The scoring step ranks the remaining nodes to choose the most suitable placement.</p>
                     <ul class="concept-list">
-                        <li>Least requested resources wins</li>
-                        <li>Pod affinity and anti-affinity preferences</li>
-                        <li>Topology spread constraints considered</li>
+                        <li>Least requested resources (resource balance)</li>
+                        <li>Pod affinity preferences</li>
+                        <li>Topology spread constraints</li>
                         <li>Image locality on nodes</li>
-                        <li>Custom scoring plugins can extend</li>
+                        <li>Custom scoring plugins</li>
                     </ul>
                     <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/scheduling-framework/" target="_blank" class="learn-more">Learn More →</a>
                 </div>
@@ -444,13 +445,14 @@
                             <div class="concept-subtitle">Assignment Phase - Commit the Decision</div>
                         </div>
                     </div>
-                    <p style="color: #cbd5e1; margin-bottom: 12px;">The binding phase finalizes the pod-to-node assignment and notifies all components.</p>
+                    <p style="color: #cbd5e1; margin-bottom: 12px;">The scheduler assigns the Pod to the highest-scoring Node.</p>
                     <ul class="concept-list">
-                        <li>Pod spec updated with nodeName</li>
+                        <li>Scheduler notifies API server</li>
+                        <li>pod.spec.nodeName is updated</li>
                         <li>Binding persisted to etcd</li>
-                        <li>Kubelet detects pod on its node</li>
+                        <li>Kubelet detects pod assignment</li>
                         <li>Container runtime creates container</li>
-                        <li>Pod transitions to Running</li>
+                        <li>Pod transitions to Running state</li>
                     </ul>
                     <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/" target="_blank" class="learn-more">Learn More →</a>
                 </div>
@@ -464,7 +466,7 @@
                 <div class="advanced-card">
                     <div class="advanced-icon">🔗</div>
                     <div class="advanced-title">Pod Affinity &amp; Anti-Affinity</div>
-                    <div class="advanced-desc">Control pod placement based on other pod labels. Spread pods across nodes or co-locate them.</div>
+                    <div class="advanced-desc">Control placement based on labels of other pods. Co-locate or spread pods across nodes.</div>
                     <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/" target="_blank" class="learn-more">View Documentation →</a>
                 </div>
 
@@ -478,14 +480,14 @@
                 <div class="advanced-card">
                     <div class="advanced-icon">💾</div>
                     <div class="advanced-title">Resource Requests &amp; Limits</div>
-                    <div class="advanced-desc">Specify CPU/memory requests to guarantee resources and limits to prevent overcommitment.</div>
+                    <div class="advanced-desc">Specify CPU/memory to reserve resources and set limits to prevent overcommitment.</div>
                     <a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/" target="_blank" class="learn-more">View Documentation →</a>
                 </div>
 
                 <div class="advanced-card">
                     <div class="advanced-icon">⚡</div>
                     <div class="advanced-title">Pod Priority &amp; Preemption</div>
-                    <div class="advanced-desc">Prioritize critical workloads. Lower priority pods can be preempted to make room for higher priority pods.</div>
+                    <div class="advanced-desc">Prioritize critical workloads. Lower priority pods can be preempted if necessary.</div>
                     <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/" target="_blank" class="learn-more">View Documentation →</a>
                 </div>
             </div>
@@ -497,9 +499,9 @@
             <div class="failures-grid">
                 <div class="failure-card">
                     <div class="failure-scenario">No Feasible Nodes</div>
-                    <div class="failure-reason">Insufficient resources or node constraint violations</div>
+                    <div class="failure-reason">No nodes meet the pod's resource requirements or constraints</div>
                     <div class="failure-status">Unschedulable</div>
-                    <div class="failure-solution">Check node capacity, adjust resource requests</div>
+                    <div class="failure-solution">Check node capacity. Adjust CPU/memory requests. Review constraints.</div>
                     <a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/" target="_blank" class="learn-more" style="display: inline-block; margin-top: 8px;">Resource Management Guide →</a>
                 </div>
 
@@ -507,15 +509,15 @@
                     <div class="failure-scenario">Affinity Conflict</div>
                     <div class="failure-reason">Pod affinity requirements cannot be satisfied by any node</div>
                     <div class="failure-status">Unschedulable</div>
-                    <div class="failure-solution">Review affinity rules and verify node labels</div>
+                    <div class="failure-solution">Review affinity rules. Verify node labels. Ensure other required pods exist.</div>
                     <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/" target="_blank" class="learn-more" style="display: inline-block; margin-top: 8px;">Affinity Guide →</a>
                 </div>
 
                 <div class="failure-card">
                     <div class="failure-scenario">Taint Not Tolerated</div>
-                    <div class="failure-reason">Pod does not tolerate any node taints</div>
+                    <div class="failure-reason">Pod lacks toleration for node taints</div>
                     <div class="failure-status">Unschedulable</div>
-                    <div class="failure-solution">Add appropriate toleration to pod spec</div>
+                    <div class="failure-solution">Add tolerations to pod spec. Verify taint names match.</div>
                     <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/" target="_blank" class="learn-more" style="display: inline-block; margin-top: 8px;">Taints &amp; Tolerations Guide →</a>
                 </div>
             </div>
